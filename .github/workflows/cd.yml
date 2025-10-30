@@ -1,0 +1,143 @@
+name: Webapp UAT
+
+on:
+  push:
+    branches:
+      - UAT
+  workflow_dispatch:
+
+env:
+  NEXT_PUBLIC_WEB_ENDPOINT: ${{ vars.NEXT_PUBLIC_WEB_ENDPOINT }}
+  NEXT_PUBLIC_GRAPHQL_ENDPOINT: ${{ vars.NEXT_PUBLIC_GRAPHQL_ENDPOINT }}
+  NEXT_PUBLIC_RESTAPI_ENDPOINT: ${{ vars.NEXT_PUBLIC_RESTAPI_ENDPOINT }}
+  NEXT_PUBLIC_WS_ENDPOINT: ${{ vars.NEXT_PUBLIC_WS_ENDPOINT }}
+  NEXT_PUBLIC_API_ENDPOINT: ${{ vars.NEXT_PUBLIC_API_ENDPOINT }}
+  NEXT_PUBLIC_CCAVENUE_ENDPOINT: ${{ vars.NEXT_PUBLIC_CCAVENUE_ENDPOINT }}
+  NEXT_PUBLIC_AWS_ENDPOINT: ${{ vars.NEXT_PUBLIC_AWS_ENDPOINT }}
+  NEXT_PUBLIC_API_KEY: ${{ vars.NEXT_PUBLIC_API_KEY }}
+  NEXT_PUBLIC_AUTH_DOMAIN: ${{ vars.NEXT_PUBLIC_AUTH_DOMAIN }}
+  NEXT_PUBLIC_PROJECT_ID: ${{ vars.NEXT_PUBLIC_PROJECT_ID }}
+  NEXT_PUBLIC_STORAGE_BUCKET: ${{ vars.NEXT_PUBLIC_STORAGE_BUCKET }}
+  NEXT_PUBLIC_MESSAGING_SENDER_ID: ${{ vars.NEXT_PUBLIC_MESSAGING_SENDER_ID }}
+  NEXT_PUBLIC_APP_ID: ${{ vars.NEXT_PUBLIC_APP_ID }}
+  NEXT_PUBLIC_AWS_URL: ${{ vars.NEXT_PUBLIC_AWS_URL }}
+  NEXT_PUBLIC_SENTRY_DSN: ${{ vars.NEXT_PUBLIC_SENTRY_DSN }}
+  NEXT_PUBLIC_ENVIRONMENT: ${{ vars.NEXT_PUBLIC_ENVIRONMENT }}
+  SENTRY_AUTH_TOKEN: ${{ vars.SENTRY_AUTH_TOKEN }}
+  WORKING_KEY: ${{ vars.WORKING_KEY }}
+  MERCHANT_ID: ${{ vars.MERCHANT_ID }}
+  NEXT_PUBLIC_VIDEO_URL_MARKETPLACE: ${{ vars.NEXT_PUBLIC_VIDEO_URL_MARKETPLACE }}
+  NEXT_PUBLIC_VIDEO_URL_BIDDING: ${{ vars.NEXT_PUBLIC_VIDEO_URL_BIDDING }}
+  NEXT_PUBLIC_VIDEO_URL_ORDER: ${{ vars.NEXT_PUBLIC_VIDEO_URL_ORDER }}
+  NEXT_PUBLIC_THUMBNAIL_URL_MARKETPLACE: ${{ vars.NEXT_PUBLIC_THUMBNAIL_URL_MARKETPLACE }}
+  NEXT_PUBLIC_THUMBNAIL_URL_BIDDING: ${{ vars.NEXT_PUBLIC_THUMBNAIL_URL_BIDDING }}
+  NEXT_PUBLIC_THUMBNAIL_URL_ORDER: ${{ vars.NEXT_PUBLIC_THUMBNAIL_URL_ORDER }}
+  NEXT_PUBLIC_CLEVERTAP_PROJECT_ID: ${{ vars.NEXT_PUBLIC_CLEVERTAP_PROJECT_ID }}
+  NEXT_PUBLIC_API_ENDPOINT_WORDPRESS: ${{ vars.NEXT_PUBLIC_API_ENDPOINT_WORDPRESS }}
+  NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID: ${{ vars.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID }}
+  NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${{ vars.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: UAT
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: Azure/docker-login@v1
+        with:
+          login-server: polystoxdevacr.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and Push Docker Image (UAT)
+        run: |
+          docker buildx build \
+            --build-arg NEXT_PUBLIC_WEB_ENDPOINT="${{ vars.NEXT_PUBLIC_WEB_ENDPOINT }}" \
+            --build-arg NEXT_PUBLIC_GRAPHQL_ENDPOINT="${{ vars.NEXT_PUBLIC_GRAPHQL_ENDPOINT }}" \
+            --build-arg NEXT_PUBLIC_RESTAPI_ENDPOINT="${{ vars.NEXT_PUBLIC_RESTAPI_ENDPOINT }}" \
+            --build-arg NEXT_PUBLIC_WS_ENDPOINT="${{ vars.NEXT_PUBLIC_WS_ENDPOINT }}" \
+            --build-arg NEXT_PUBLIC_API_ENDPOINT="${{ vars.NEXT_PUBLIC_API_ENDPOINT }}" \
+            --build-arg NEXT_PUBLIC_CCAVENUE_ENDPOINT="${{ vars.NEXT_PUBLIC_CCAVENUE_ENDPOINT }}" \
+            --build-arg NEXT_PUBLIC_AWS_ENDPOINT="${{ vars.NEXT_PUBLIC_AWS_ENDPOINT }}" \
+            --build-arg NEXT_PUBLIC_API_KEY="${{ vars.NEXT_PUBLIC_API_KEY }}" \
+            --build-arg NEXT_PUBLIC_AUTH_DOMAIN="${{ vars.NEXT_PUBLIC_AUTH_DOMAIN }}" \
+            --build-arg NEXT_PUBLIC_PROJECT_ID="${{ vars.NEXT_PUBLIC_PROJECT_ID }}" \
+            --build-arg NEXT_PUBLIC_STORAGE_BUCKET="${{ vars.NEXT_PUBLIC_STORAGE_BUCKET }}" \
+            --build-arg NEXT_PUBLIC_MESSAGING_SENDER_ID="${{ vars.NEXT_PUBLIC_MESSAGING_SENDER_ID }}" \
+            --build-arg NEXT_PUBLIC_APP_ID="${{ vars.NEXT_PUBLIC_APP_ID }}" \
+            --build-arg NEXT_PUBLIC_AWS_URL="${{ vars.NEXT_PUBLIC_AWS_URL }}" \
+            --build-arg NEXT_PUBLIC_SENTRY_DSN="${{ vars.NEXT_PUBLIC_SENTRY_DSN }}" \
+            --build-arg NEXT_PUBLIC_ENVIRONMENT="${{ vars.NEXT_PUBLIC_ENVIRONMENT }}" \
+            --build-arg SENTRY_AUTH_TOKEN="${{ vars.SENTRY_AUTH_TOKEN }}" \
+            --build-arg WORKING_KEY="${{ vars.WORKING_KEY }}" \
+            --build-arg MERCHANT_ID="${{ vars.MERCHANT_ID }}" \
+            --build-arg NEXT_PUBLIC_VIDEO_URL_MARKETPLACE="${{ vars.NEXT_PUBLIC_VIDEO_URL_MARKETPLACE }}" \
+            --build-arg NEXT_PUBLIC_VIDEO_URL_BIDDING="${{ vars.NEXT_PUBLIC_VIDEO_URL_BIDDING }}" \
+            --build-arg NEXT_PUBLIC_VIDEO_URL_ORDER="${{ vars.NEXT_PUBLIC_VIDEO_URL_ORDER }}" \
+            --build-arg NEXT_PUBLIC_THUMBNAIL_URL_MARKETPLACE="${{ vars.NEXT_PUBLIC_THUMBNAIL_URL_MARKETPLACE }}" \
+            --build-arg NEXT_PUBLIC_THUMBNAIL_URL_BIDDING="${{ vars.NEXT_PUBLIC_THUMBNAIL_URL_BIDDING }}" \
+            --build-arg NEXT_PUBLIC_THUMBNAIL_URL_ORDER="${{ vars.NEXT_PUBLIC_THUMBNAIL_URL_ORDER }}" \
+            --build-arg NEXT_PUBLIC_CLEVERTAP_PROJECT_ID="${{ vars.NEXT_PUBLIC_CLEVERTAP_PROJECT_ID }}" \
+            --build-arg NEXT_PUBLIC_API_ENDPOINT_WORDPRESS="${{ vars.NEXT_PUBLIC_API_ENDPOINT_WORDPRESS }}" \
+            --build-arg NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID="${{ vars.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID }}" \
+            --build-arg NEXT_PUBLIC_GOOGLE_ANALYTICS_ID="${{ vars.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID }}" \
+            -t polystoxdevacr.azurecr.io/polystox-webapp-uat:${{ github.run_number }} \
+            .
+          docker push polystoxdevacr.azurecr.io/polystox-webapp-uat:${{ github.run_number }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: UAT
+    needs: build
+    steps:
+      - name: SSH into Azure VM and Deploy (UAT)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AZURE_VM_HOST }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          password: ${{ secrets.AZURE_VM_PASSWORD }}
+          script: |
+            docker login polystoxdevacr.azurecr.io -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+
+            docker pull polystoxdevacr.azurecr.io/polystox-webapp-uat:${{ github.run_number }}
+
+            docker stop polystox-webapp-uat || true
+            docker rm polystox-webapp-uat || true
+
+            docker images --format "{{.Repository}}:{{.Tag}}" | grep "polystoxdevacr.azurecr.io/polystox-webapp-uat" | grep -v "${{ github.run_number }}" | xargs -r docker rmi -f
+            docker image prune -f
+
+            docker run -d --restart unless-stopped \
+              --name polystox-webapp-uat \
+              -p 3100:3000 \
+              -e NEXT_PUBLIC_WEB_ENDPOINT="${{ vars.NEXT_PUBLIC_WEB_ENDPOINT }}" \
+              -e NEXT_PUBLIC_GRAPHQL_ENDPOINT="${{ vars.NEXT_PUBLIC_GRAPHQL_ENDPOINT }}" \
+              -e NEXT_PUBLIC_RESTAPI_ENDPOINT="${{ vars.NEXT_PUBLIC_RESTAPI_ENDPOINT }}" \
+              -e NEXT_PUBLIC_WS_ENDPOINT="${{ vars.NEXT_PUBLIC_WS_ENDPOINT }}" \
+              -e NEXT_PUBLIC_API_ENDPOINT="${{ vars.NEXT_PUBLIC_API_ENDPOINT }}" \
+              -e NEXT_PUBLIC_CCAVENUE_ENDPOINT="${{ vars.NEXT_PUBLIC_CCAVENUE_ENDPOINT }}" \
+              -e NEXT_PUBLIC_AWS_ENDPOINT="${{ vars.NEXT_PUBLIC_AWS_ENDPOINT }}" \
+              -e NEXT_PUBLIC_API_KEY="${{ vars.NEXT_PUBLIC_API_KEY }}" \
+              -e NEXT_PUBLIC_AUTH_DOMAIN="${{ vars.NEXT_PUBLIC_AUTH_DOMAIN }}" \
+              -e NEXT_PUBLIC_PROJECT_ID="${{ vars.NEXT_PUBLIC_PROJECT_ID }}" \
+              -e NEXT_PUBLIC_STORAGE_BUCKET="${{ vars.NEXT_PUBLIC_STORAGE_BUCKET }}" \
+              -e NEXT_PUBLIC_MESSAGING_SENDER_ID="${{ vars.NEXT_PUBLIC_MESSAGING_SENDER_ID }}" \
+              -e NEXT_PUBLIC_APP_ID="${{ vars.NEXT_PUBLIC_APP_ID }}" \
+              -e NEXT_PUBLIC_AWS_URL="${{ vars.NEXT_PUBLIC_AWS_URL }}" \
+              -e NEXT_PUBLIC_SENTRY_DSN="${{ vars.NEXT_PUBLIC_SENTRY_DSN }}" \
+              -e NEXT_PUBLIC_ENVIRONMENT="${{ vars.NEXT_PUBLIC_ENVIRONMENT }}" \
+              -e SENTRY_AUTH_TOKEN="${{ vars.SENTRY_AUTH_TOKEN }}" \
+              -e WORKING_KEY="${{ vars.WORKING_KEY }}" \
+              -e MERCHANT_ID="${{ vars.MERCHANT_ID }}" \
+              -e NEXT_PUBLIC_VIDEO_URL_MARKETPLACE="${{ vars.NEXT_PUBLIC_VIDEO_URL_MARKETPLACE }}" \
+              -e NEXT_PUBLIC_VIDEO_URL_BIDDING="${{ vars.NEXT_PUBLIC_VIDEO_URL_BIDDING }}" \
+              -e NEXT_PUBLIC_VIDEO_URL_ORDER="${{ vars.NEXT_PUBLIC_VIDEO_URL_ORDER }}" \
+              -e NEXT_PUBLIC_THUMBNAIL_URL_MARKETPLACE="${{ vars.NEXT_PUBLIC_THUMBNAIL_URL_MARKETPLACE }}" \
+              -e NEXT_PUBLIC_THUMBNAIL_URL_BIDDING="${{ vars.NEXT_PUBLIC_THUMBNAIL_URL_BIDDING }}" \
+              -e NEXT_PUBLIC_THUMBNAIL_URL_ORDER="${{ vars.NEXT_PUBLIC_THUMBNAIL_URL_ORDER }}" \
+              -e NEXT_PUBLIC_CLEVERTAP_PROJECT_ID="${{ vars.NEXT_PUBLIC_CLEVERTAP_PROJECT_ID }}" \
+              -e NEXT_PUBLIC_API_ENDPOINT_WORDPRESS="${{ vars.NEXT_PUBLIC_API_ENDPOINT_WORDPRESS }}" \
+              -e NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID="${{ vars.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID }}" \
+              -e NEXT_PUBLIC_GOOGLE_ANALYTICS_ID="${{ vars.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID }}" \
+              polystoxdevacr.azurecr.io/polystox-webapp-uat:${{ github.run_number }}
