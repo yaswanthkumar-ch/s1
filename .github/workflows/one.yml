@@ -1,22 +1,17 @@
-name: Webapp Deployment
+name: Test Workflow with Push and Dispatch
 
 on:
-  workflow_dispatch:  # Allows manual triggering from GitHub UI
+  push:
+    branches:
+      - main  # Change this to your branch if needed
+  workflow_dispatch:  # Allows manual trigger
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Build Docker Image
-        run: |
-          docker build -t my-webapp .
-          echo "Docker image built!"
-
-      - name: Push Docker Image to Registry
-        run: |
-          docker push my-webapp
-          echo "Docker image pushed!"
+      - name: Build and Echo
+        run: echo "Hello, world!"
